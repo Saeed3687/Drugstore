@@ -32,5 +32,3 @@ def login_view(request):
 
     return render(request, 'index.html')
 
-def home(request):
-    return render(request,'home.html')

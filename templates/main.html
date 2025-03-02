@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicare - Online Drugstore</title>
+    <link rel="stylesheet" href="{%static 'main_styles.css' %}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header>
+        <div class="container">
+            <h1 class="logo">Medicare</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Products</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#" class="btn">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Your Trusted Online Pharmacy</h2>
+            <p>Fast and Reliable Medication Delivery to Your Doorstep.</p>
+            <div class="search-box">
+                <input type="text" id="search" placeholder="Search for medicines...">
+                <button onclick="searchMedicine()">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="products">
+        <div class="container">
+            <h2>Featured Medicines</h2>
+            <div class="product-list">
+                <div class="product">
+                    <img src="pill.jpg" alt="Paracetamol">
+                    <h3>Paracetamol</h3>
+                    <p>$5.00</p>
+                    <button class="buy-btn">Buy Now</button>
+                </div>
+                <div class="product">
+                    <img src="syrup.jpg" alt="Cough Syrup">
+                    <h3>Cough Syrup</h3>
+                    <p>$8.00</p>
+                    <button class="buy-btn">Buy Now</button>
+                </div>
+                <div class="product">
+                    <img src="vitamins.jpg" alt="Vitamin C">
+                    <h3>Vitamin C</h3>
+                    <p>$12.00</p>
+                    <button class="buy-btn">Buy Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Medicare. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'main_script.js' %}"></script>
+</body>
+</html>
