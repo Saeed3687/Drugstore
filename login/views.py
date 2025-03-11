@@ -15,7 +15,7 @@ def register_view(request):
         user.save()
         return redirect('login')
 
-    return render(request, 'index.html')
+    return render(request, 'logPage.html')
 
 def login_view(request):
     if request.method == "POST":
@@ -28,7 +28,7 @@ def login_view(request):
             return redirect('home')  # Change 'home' to your actual home page route
         else:
             print('Not ok')
-            return render(request, 'index.html', {'error': 'Invalid credentials'})
+            return render(request, 'logPage.html', {'error': 'Invalid credentials'})
 
-    return render(request, 'index.html')
+    return render(request, 'logPage.html')
 
