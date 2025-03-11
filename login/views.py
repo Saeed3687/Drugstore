@@ -28,7 +28,7 @@ def login_view(request):
             return redirect('home')  # Change 'home' to your actual home page route
         else:
             print('Not ok')
-            return render(request, 'logPage.html', {'error': 'Invalid credentials'})
+            return render(request, 'logPage.html', {'error': 'Invalid Email or Password'})
 
     return render(request, 'logPage.html')
 

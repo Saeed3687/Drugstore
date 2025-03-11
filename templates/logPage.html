@@ -9,6 +9,9 @@
 <body>
 <!-- partial:index.partial.html -->
 <h2> Sign in/up Form</h2>
+
+
+
 <div class="container" id="container">
 	<div class="form-container sign-up-container">
 		<form method="POST" action="{% url 'register' %}">
@@ -29,10 +32,15 @@
             <span>or use your account</span>
             <input type="email" name="email" placeholder="Email" required />
             <input type="password" name="password" placeholder="Password" required />
+            {% if error != None %}
+              <h5>{{error}}</h5>
+            {% endif %}
             <a href="#">Forgot your password?</a>
             <button type="submit">Sign In</button>
         </form>
-	</div>
+      
+
+       </div>
 	<div class="overlay-container">
 		<div class="overlay">
 			<div class="overlay-panel overlay-left">
