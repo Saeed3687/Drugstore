@@ -6,9 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medicare - Online Drugstore</title>
     <link rel="stylesheet" href="{%static 'main_styles.css' %}">
+    
     <style>
         .stars {
             color: gold;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .stars span {
+            margin: 2px;
         }
     </style>
 </head>
@@ -49,18 +55,21 @@
             <div class="product-list">
                 {% for product in products %}
                 <div class="product">
-                    <img src= "{% static 'images/' %}{{ product.img }}" alt="{{ product.name }}">
+                    <img src= "{{ product.image }}" alt="{{ product.name }}">
                     <h3>{{ product.name }}</h3>
                     <p>{{ product.price }}</p>
-                    <p class="stars">
+                    <p class="stars" data-product-id="{{ product.id }}">
                         {% for i in "12345"|make_list %}
-                            {% if forloop.counter <= product.rating %}
-                                ★
-                            {% else %}
-                                ☆
-                            {% endif %}
+                            <span class="star" data-value="{{ forloop.counter }}">
+                                {% if forloop.counter <= product.rating %}
+                                    ★
+                                {% else %}
+                                    ☆
+                                {% endif %}
+                            </span>
                         {% endfor %}
                     </p>
+                    
                     <button class="buy-btn">Buy Now</button>
                 </div>
                 {% endfor %}
@@ -76,5 +85,33 @@
     </footer>
 
     <script src="{% static 'main_script.js' %}"></script>
+    <script>
+       document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".stars span").forEach(star => {
+                star.addEventListener("click", function () {
+                    let productId = this.parentElement.getAttribute("data-product-id");
+                    let rating = this.getAttribute("data-value");
+
+                    fetch(`/rate/${productId}/`, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": "{{ csrf_token }}",
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: `rating=${rating}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(`Thanks for rating! New rating: ${data.new_rating.toFixed(1)} (${data.num_ratings} votes)`);
+                            location.reload();
+                        } else {
+                            alert("Error submitting rating.");
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
