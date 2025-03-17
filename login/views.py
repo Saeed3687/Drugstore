@@ -25,7 +25,7 @@ def login_view(request):
         user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')  # Change 'home' to your actual home page route
+            return redirect('mainPage') 
         else:
             print('Not ok')
             return render(request, 'logPage.html', {'error': 'Invalid Email or Password'})

@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medicare - Online Drugstore</title>
     <link rel="stylesheet" href="{%static 'main_styles.css' %}">
+    <style>
+        .stars {
+            color: gold;
+        }
+    </style>
 </head>
 <body>
 
@@ -42,24 +47,23 @@
         <div class="container">
             <h2>Featured Medicines</h2>
             <div class="product-list">
+                {% for product in products %}
                 <div class="product">
-                    <img src="pill.jpg" alt="Paracetamol">
-                    <h3>Paracetamol</h3>
-                    <p>$5.00</p>
+                    <img src= "{% static 'images/' %}{{ product.img }}" alt="{{ product.name }}">
+                    <h3>{{ product.name }}</h3>
+                    <p>{{ product.price }}</p>
+                    <p class="stars">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= product.rating %}
+                                ★
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                    </p>
                     <button class="buy-btn">Buy Now</button>
                 </div>
-                <div class="product">
-                    <img src="syrup.jpg" alt="Cough Syrup">
-                    <h3>Cough Syrup</h3>
-                    <p>$8.00</p>
-                    <button class="buy-btn">Buy Now</button>
-                </div>
-                <div class="product">
-                    <img src="vitamins.jpg" alt="Vitamin C">
-                    <h3>Vitamin C</h3>
-                    <p>$12.00</p>
-                    <button class="buy-btn">Buy Now</button>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
