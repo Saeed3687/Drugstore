@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{% static 'main_styles.css' %}">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1 class="logo">Medicare</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    <li><a href="{% url 'logout' %}" class="btn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="profile">
+        <div class="container">
+            <h2>Welcome, {{ user.username }}!</h2>
+            <p>Email: {{ user.email }}</p>
+            <p>Account Created: {{ user.date_joined|date:"F d, Y" }}</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Medicare. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

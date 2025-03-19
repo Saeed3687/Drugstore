@@ -46,7 +46,7 @@ nav ul li a {
 
 /* Hero Section */
 .hero {
-    background: url('pharmacy.jpg') no-repeat center center/cover;
+    background: url('images/background.jpg') no-repeat center center/cover;
     color: black;
     padding: 100px 0;
 }
@@ -101,6 +101,16 @@ nav ul li a {
     border: none;
     cursor: pointer;
 }
+
+.stars {
+    color: gold;
+    cursor: pointer;
+    font-size: 20px;
+}
+.stars span {
+    margin: 2px;
+}
+
 
 /* Footer */
 footer {
