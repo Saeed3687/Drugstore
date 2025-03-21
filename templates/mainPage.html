@@ -21,7 +21,7 @@
                     <li><a href="#">About</a></li>
                     <li><a href="#">Contact</a></li>
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'login' %}" class="btn">Hello, {{ user.username }}</a></li>
+                        <li><a href="{% url 'login' %}" class="btn"> {{ user.username }}</a></li>
                         <form action="{% url 'logout' %}" method="post" style="display:inline;">
                             {% csrf_token %}
                             <button type="submit" class="btn">Logout</button>
@@ -75,7 +75,27 @@
             </div>
         </div>
     </section>
- 
+    <!-- Categories Section -->
+    <section class="categories">
+        <div class="container">
+            <h2>Shop by Category</h2>
+            <div class="category-list">
+                {% for category in categories %}
+                <div class="category">
+                    <h3>{{ category.name }}</h3>
+                    <p>{{ category.products.count }} products available</p>
+                    <ul>
+                        {% for product in category.products.all %}
+                            <li>{{ product.name }} - ${{ product.price }}</li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{% url 'category' category.id %}" class="btn">View Products</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer>
         <div class="container">

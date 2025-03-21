@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from .models import Product
+from .models import Product, Category
 
 # Create your views here.
 
@@ -11,9 +11,14 @@ def home(request):
     return render(request,'home.html')
 
 def mainPage(request):
-    products = Product.objects.all()
-    return render(request, 'mainPage.html', {"products": products})
+    # categories = Category.objects.all()  # Fetch all categories from the database
+    # products = Product.objects.all()  # Fetch all products
+    
+    # return render(request, 'mainPage.html', {'categories': categories, 'products': products})
+    categories = Category.objects.prefetch_related('products').all()  # Fetch categories with products
+    products = Product.objects.all()  # Fetch all products
 
+    return render(request, 'mainPage.html', {'categories': categories, 'products': products})
 
 
 def submit_rating(request, product_id):
@@ -26,3 +31,8 @@ def submit_rating(request, product_id):
             return JsonResponse({"success": True, "new_rating": product.rating, "num_ratings": product.num_ratings})
         
     return JsonResponse({"success": False, "message": "Invalid rating"})
+
+def category_view(request, category_name):
+    products = Product.objects.filter(category=category_name)  # Filter products by category
+    
+    return render(request, 'category.html', {'products': products, 'category_name': category_name})
