@@ -4,57 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medicare - Online Drugstore</title>
-    <link rel="stylesheet" href="{%static 'main_styles.css' %}">
-    
+    <title>{{ category.name }} - Products</title>
+    <link rel="stylesheet" href="{% static 'main_styles.css' %}">
 </head>
 <body>
 
-    <!-- Navigation Bar -->
+    <!-- Navigation -->
     <header>
         <div class="container">
             <h1 class="logo">Medicare</h1>
             <nav>
                 <ul>
-                    
-                    <li><a href="#">Products</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                    {% if user.is_authenticated %}
-                        <li><a href="{% url 'login' %}" class="btn"> {{ user.username }}</a></li>
-                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn">Logout</button>
-                        </form>
-                        
-                    {% else %}
-                        <li><a href="{% url 'login' %}" class="btn">Login</a></li>
-                    {% endif %}
+                    <li><a href="{% url 'mainPage' %}">Home</a></li>
+         
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h2>Your Trusted Online Pharmacy</h2>
-            <p>Fast and Reliable Medication Delivery to Your Doorstep.</p>
-            <div class="search-box">
-                <input type="text" id="search" placeholder="Search for medicines...">
-                <button onclick="searchMedicine()">Search</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Products -->
+    <!-- Category Products -->
     <section class="products">
         <div class="container">
-            <h2>Featured Medicines</h2>
+            <h2>{{ category.name }}</h2>
+            <p>Explore our range of {{ category.name }} products.</p>
             <div class="product-list">
                 {% for product in products %}
                 <div class="product">
-                    <img src= "{{ product.image }}" alt="{{ product.name }}">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
                     <h3>{{ product.name }}</h3>
                     <p>{{ product.price }}</p>
                     <p class="stars" data-product-id="{{ product.id }}">
@@ -75,31 +51,8 @@
             </div>
         </div>
     </section>
-    <!-- Categories Section -->
-    <section class="categories">
-        <div class="container">
-            <h2>Shop by Category</h2>
-            <div class="category-list">
-                {% for category in categories %}
-                <div class="category">
-                    <h3>{{ category.name }}</h3>
-                    <p>{{ category.products.count }} products available</p>
-                    <a href="{% url 'category_products' category.id %}" class="btn">View Products</a>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>© 2025 Medicare. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <script src="{% static 'main_script.js' %}"></script>
     <script>
-       document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".stars span").forEach(star => {
                 star.addEventListener("click", function () {
                     let productId = this.parentElement.getAttribute("data-product-id");
@@ -126,5 +79,12 @@
             });
         });
     </script>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Medicare. All rights reserved.</p>
+        </div>
+    </footer>
+
 </body>
 </html>
