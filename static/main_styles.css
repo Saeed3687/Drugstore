@@ -198,3 +198,70 @@ footer {
 .category .category-btn:hover {
     background-color: #0056b3;
 }
+
+.profile-icon {
+    position: absolute;
+    left: 20px;
+    top: 15px;
+}
+
+.profile-icon img {
+    width: 30px;  /* Reduce the size */
+    height: 30px; /* Reduce the size */
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #ccc; /* Optional: Add a border for better visibility */
+    padding: 2px; /* Optional: Adds space inside the border */
+}
+
+
+.profile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.profile-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.profile-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+.profile-card h2 {
+    margin-bottom: 10px;
+}
+
+.profile-card p {
+    margin: 5px 0;
+}
+
+.logout-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #ff4d4d;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.logout-btn:hover {
+    background-color: #d63333;
+}
+.profile-icon i {
+    font-size: 30px; /* Adjust size */
+    color: #333; /* Adjust color */
+    cursor: pointer;
+}

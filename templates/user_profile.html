@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="{% static 'main_styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1 class="logo">User Profile</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'mainPage' %}" class="btn">Back to Home</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="profile">
+        <div class="container">
+            <div class="profile-card">
+                
+                <h2>{{ user.username }}</h2>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                <p><strong>Joined:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submite" class="btn">Logout</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

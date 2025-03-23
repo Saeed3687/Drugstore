@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .models import Product, Category
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
@@ -39,3 +39,7 @@ def category_products(request, category_id):
     products = Product.objects.filter(category=category)
 
     return render(request, 'category.html', {'category': category, 'products': products})
+
+@login_required
+def user_profile(request):
+    return render(request, 'user_profile.html', {'user': request.user})
