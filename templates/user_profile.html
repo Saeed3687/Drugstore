@@ -1,16 +1,57 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
     <link rel="stylesheet" href="{% static 'main_styles.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> -->
+    <title>User Profile - Drugstore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .profile-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .info-item {
+            margin: 10px 0;
+        }
+        .order-list, .prescription-list {
+            list-style: none;
+            padding: 0;
+        }
+        .order-list li, .prescription-list li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-
     <header>
         <div class="container">
             <h1 class="logo">User Profile</h1>
@@ -21,22 +62,107 @@
             </nav>
         </div>
     </header>
-
-    <section class="profile">
-        <div class="container">
-            <div class="profile-card">
-                
-                <h2>{{ user.username }}</h2>
-                <p><strong>Email:</strong> {{ user.email }}</p>
-                <p><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-                <p><strong>Joined:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
-                <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submite" class="btn">Logout</button>
-                </form>
-            </div>
+    <div class="profile-container">
+        <div class="section" id="personal-info">
+            <h2>Personal Information</h2>
+            <h2>{{ user.username }}</h2>
+            <div class="info-item">Name: </strong> {{ user.first_name }} {{ user.last_name }}</p> </div>
+            <div class="info-item">Email: </strong> {{ user.email }}</p></div>
+            <div class="info-item">Phone: <span id="user-phone"></span></div>
+            <div class="info-item">Address: <span id="user-address"></span></div>
+            <button onclick="editPersonalInfo()">Edit Info</button>
         </div>
-    </section>
 
+        <div class="section" id="order-history">
+            <h2>Order History</h2>
+            <ul class="order-list" id="orders"></ul>
+        </div>
+
+        <div class="section" id="prescriptions">
+            <h2>Prescriptions</h2>
+            <ul class="prescription-list" id="prescription-list"></ul>
+            <button onclick="addPrescription()">Add Prescription</button>
+        </div>
+        <div>
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submite" class="btn">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        
+        const userData = {
+            name: "John Doe",
+            email: "john.doe@email.com",
+            phone: "(555) 123-4567",
+            address: "123 Main St, City, Country",
+            orders: [
+                { id: "ORD001", date: "2025-03-15", total: 45.99, status: "Delivered" },
+                { id: "ORD002", date: "2025-03-20", total: 29.99, status: "Processing" }
+            ],
+            prescriptions: [
+                { medication: "Amoxicillin", dosage: "500mg", frequency: "Twice daily" },
+                { medication: "Lisinopril", dosage: "10mg", frequency: "Once daily" }
+            ]
+        };
+
+        // Function to populate profile data
+        function loadProfile() {
+            document.getElementById("user-name").textContent = userData.name;
+            document.getElementById("user-email").textContent = userData.email;
+            document.getElementById("user-phone").textContent = userData.phone;
+            document.getElementById("user-address").textContent = userData.address;
+
+            // Populate orders
+            const orderList = document.getElementById("orders");
+            userData.orders.forEach(order => {
+                const li = document.createElement("li");
+                li.innerHTML = `Order ${order.id} - ${order.date} - $${order.total} - ${order.status}`;
+                orderList.appendChild(li);
+            });
+
+            // Populate prescriptions
+            const prescriptionList = document.getElementById("prescription-list");
+            userData.prescriptions.forEach(pres => {
+                const li = document.createElement("li");
+                li.innerHTML = `${pres.medication} - ${pres.dosage} - ${pres.frequency}`;
+                prescriptionList.appendChild(li);
+            });
+        }
+
+        // Edit personal info function
+        function editPersonalInfo() {
+            const newName = prompt("Enter new name:", userData.name);
+            const newEmail = prompt("Enter new email:", userData.email);
+            const newPhone = prompt("Enter new phone:", userData.phone);
+            const newAddress = prompt("Enter new address:", userData.address);
+
+            if (newName) userData.name = newName;
+            if (newEmail) userData.email = newEmail;
+            if (newPhone) userData.phone = newPhone;
+            if (newAddress) userData.address = newAddress;
+
+            loadProfile(); // Refresh display
+            // Here you'd typically send updated data to your backend
+        }
+
+        // Add prescription function
+        function addPrescription() {
+            const medication = prompt("Enter medication name:");
+            const dosage = prompt("Enter dosage:");
+            const frequency = prompt("Enter frequency:");
+
+            if (medication && dosage && frequency) {
+                userData.prescriptions.push({ medication, dosage, frequency });
+                loadProfile(); // Refresh display
+                // Here you'd typically send new prescription to your backend
+            }
+        }
+
+        // Load profile when page loads
+        window.onload = loadProfile;
+    </script>
 </body>
 </html>
