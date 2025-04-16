@@ -1,11 +1,11 @@
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+    color: #333;
 }
-
 /* Header */
 header {
     background: #28a745;
