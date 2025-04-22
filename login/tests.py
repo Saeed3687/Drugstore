@@ -1,8 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
-from django.test import TransactionTestCase
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
 
 
 real_user = User.objects.get(username = 'ahmad@gmail.com')
@@ -15,6 +14,7 @@ class LoginViewTest(TestCase):
     def test_is_in_database(self):
         
         self.assertEqual(real_user.first_name,'fa')
+        self.assertTrue(check_password('123456', real_user.password))
 
     def test_login_successful(self):
         response = self.client.post(reverse('login'), {
