@@ -18,6 +18,10 @@ def register_view(request):
     return render(request, 'logPage.html')
 
 def login_view(request):
+
+    if request.user.is_authenticated:
+        return redirect('mainPage')  
+
     if request.method == "POST":
         email = request.POST['email']
         password = request.POST['password']
@@ -27,7 +31,6 @@ def login_view(request):
             login(request, user)
             return redirect('mainPage') 
         else:
-            print('Not ok')
             return render(request, 'logPage.html', {'error': 'Invalid Email or Password'})
 
     return render(request, 'logPage.html')
