@@ -183,10 +183,15 @@
       <div class="row">
         <div class="col-md-5">
           <div class="custom-boxes">
-            <div class="custom-box" >My personal Info</div>
+            <div>
+                <form method="post" action="{% url 'user_info' %}">{% csrf_token %}
+                  <button type="submit" class="custom-box" style="width: 250px;">My personal Info</button>
+                </form>
+                
+            </div>
             <div class="custom-box" style="background-color: #c3f1f5 !important;">My order codes</div>
             <form method="post" action="{% url 'logout' %}">{% csrf_token %}
-              <button type="submit" class="custom-box">Logout</button>
+              <button type="submit" class="custom-box" style="width: 250px;">Logout</button>
             </form>
           </div>
         </div>

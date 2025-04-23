@@ -55,6 +55,7 @@
       text-align: left;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      width: 300px;
     }
 
     .custom-box:hover {
@@ -156,23 +157,24 @@
       <div class="row">
         <div class="col-md-5">
           <div class="custom-boxes">
-            <div class="custom-box">
+            <div>
               <form method="post" action="{% url 'user_info' %}">{% csrf_token %}
-                <button type="submit" >My personal Info</button>
+                <button type="submit" class="custom-box">My personal Info</button>
               </form>
               
             </div>
-            <div class="custom-box">
+            <div>
               <form method="post" action="{% url 'user_orders' %}">{% csrf_token %}
-                <button type="submit" >My Order Codes </button>
-              </form></div>
+                <button type="submit" class="custom-box">My Order Codes </button>
+              </form>
+            </div>
             <form method="post" action="{% url 'logout' %}">{% csrf_token %}
               <button type="submit" class="custom-box">Logout</button>
             </form>
           </div>
         </div>
         <div class="col-md-7">
-          <div class="detail-box">
+          <div class="detail-box" style="font-family: Poppins, sans-serif;">
             <h3>
               Hello dear {{user.first_name}}
             </h3>

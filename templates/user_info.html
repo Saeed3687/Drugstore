@@ -55,6 +55,7 @@
       text-align: left;
       cursor: pointer;
       transition: background-color 0.3s ease;
+
     }
 
     .custom-box:hover {
@@ -184,9 +185,13 @@
         <div class="col-md-5">
           <div class="custom-boxes">
             <div class="custom-box" style="background-color: #c3f1f5 !important;">My personal Info</div>
-            <div class="custom-box">My order codes</div>
+            <div>
+                <form method="post" action="{% url 'user_orders' %}">{% csrf_token %}
+                  <button type="submit" class="custom-box" style="width: 250px !important;">My Order Codes </button>
+                </form>
+            </div>
             <form method="post" action="{% url 'logout' %}">{% csrf_token %}
-              <button type="submit" class="custom-box">Logout</button>
+              <button type="submit" class="custom-box" style="width: 250px !important;">Logout</button>
             </form>
           </div>
         </div>
