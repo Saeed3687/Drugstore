@@ -2,7 +2,8 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from .models import Product, Category, UserProfile
+from .models import Product, Category
+from userProfile.models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # Create your views here.

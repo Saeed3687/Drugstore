@@ -1,41 +1,80 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from .models import UserProfile
 # Create your views here.
 
 
 @login_required
-def profile(request):
-    return render(request, 'user_profile.html')
+
+
+def user_profile(request):
+    
+    profile, created = UserProfile.objects.get_or_create(user= request.user)
+    print(profile.address)
+    return render(request, 'user_profile.html', {'user': request.user, 'profile': profile})
+
+
 
 @login_required
+
 def userInfo(request):
-    return render(request,"user_info.html")
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    return render(request, 'user_info.html', {
+        'user': request.user,
+        'profile': profile,
+    })
 
 @login_required
 def userOrders(request):
     return render(request,"user_orders.html")
 
+
+
 @login_required
 def update_user_info(request):
+    user = request.user
+   
+    profile, created = UserProfile.objects.get_or_create(user=user)
+
     if request.method == "POST":
         new_email = request.POST.get('email')
         new_username = request.POST.get('username')
+        new_address = request.POST.get('address')
+        new_phone_number = request.POST.get('phone_number')
 
-        user = request.user
-        user.email = new_email
-        user.first_name = new_username
-        user.username = new_email  # If you want email as username
-
+        # Validate input
         if not new_email or not new_username:
             return render(request, 'user_info.html', {
-                'error': 'All fields are required',
-                'user': request.user
+                'error': 'Email and username are required',
+                'user': user,
+                'profile': profile
             })
-        if User.objects.filter(username=new_email).exists():
-            return render(request, 'user_info.html', {'error': 'Email already exists'})
+
+        # Check if email (username) already exists and belongs to a different user
+        if User.objects.filter(username=new_email).exclude(id=user.id).exists():
+            return render(request, 'user_info.html', {
+                'error': 'Email already in use by another account',
+                'user': user,
+                'profile': profile
+            })
+        
+
+        # Update User fields
+        user.email = new_email
+        user.username = new_email  # optional: if email is used as username
+        user.first_name = new_username
         user.save()
+        if new_address == None:
+            new_address = ''
+        if new_phone_number == None:
+            new_phone_number = ''
+        # Update UserProfile fields
+        profile.address = new_address
+        profile.phone_number = new_phone_number
+        profile.save()
 
+        return redirect('user_info')
 
-
-    return redirect('user_profile')
+    # Handle GET request fallback
+    return render(request, 'user_info.html', {'user': user, 'profile': profile})

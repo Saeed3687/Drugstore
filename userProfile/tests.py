@@ -32,13 +32,11 @@ class UserProfileViewTest(TestCase):
         self.assertEqual(self.user.first_name, 'NewName')
 
     def test_update_user_info_duplicate_email_fails(self):
-        # Another user exists with same email
         User.objects.create_user(
             username='other@example.com',
             email='other@example.com',
             password='otherpass'
         )
-
         self.client.login(username='user@example.com', password='testpass123')
         response = self.client.post(reverse('update_user_info'), {
             'email': 'other@example.com',

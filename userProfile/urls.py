@@ -1,10 +1,11 @@
 
 from django.urls import path
 from . import views  # Import your views
+# from mainPage import views as user_profile  # Import your views
 
 urlpatterns = [
     
-    path('profile/', views.profile, name='profile'),
+    path('profile/', views.user_profile, name='user_profile'),
     path('profile/user_info', views.userInfo, name='user_info'),
     path('profile/user_orders', views.userOrders, name='user_orders'),
   
