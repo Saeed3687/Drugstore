@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from .models import Product, Category
+from .models import Product, Category, UserProfile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # Create your views here.
@@ -38,16 +38,20 @@ def category_products(request, category_id):
 
 
 @login_required
+
+
 def user_profile(request):
-    return render(request, 'user_profile.html', {'user': request.user})
+    
+    profile, created = UserProfile.objects.get_or_create(user= request.user)
+    print(profile.address)
+    return render(request, 'user_profile.html', {'user': request.user, 'profile': profile})
+
 
 
 # Search
 
 def search(request):
     query = request.GET.get('q', '')
-    # Product.objects.filter(name__icontains=query)
-
     products = Product.objects.filter(name__icontains=query) if query else []
 
     return render(request, 'search.html', {'products': products, 'query': query})
