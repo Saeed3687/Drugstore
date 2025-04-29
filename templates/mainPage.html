@@ -92,10 +92,11 @@
                 
                 
               </ul>
-              <form class="form-inline ">
-                <input type="search" placeholder="Search">
-                <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
+              <form class="form-inline" method="get" action="{% url 'search' %}">
+                <input type="search" name="q" placeholder="Search">
+                <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">Search</button>
               </form>
+              
               <div class="login_btn-contanier ml-0 ml-lg-5">
                 <img src="{%static 'images/user.png' %}" alt="">
                 {% if user.is_authenticated %}
