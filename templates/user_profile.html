@@ -161,13 +161,13 @@
               <form method="post" action="{% url 'user_info' %}">{% csrf_token %}
                 <button type="submit" class="custom-box">My personal Info</button>
               </form>
-              
             </div>
             <div>
               <form method="post" action="{% url 'user_orders' %}">{% csrf_token %}
                 <button type="submit" class="custom-box">My Order Codes </button>
               </form>
             </div>
+            <div class="custom-box">my Address</div>
             <form method="post" action="{% url 'logout' %}">{% csrf_token %}
               <button type="submit" class="custom-box">Logout</button>
             </form>
