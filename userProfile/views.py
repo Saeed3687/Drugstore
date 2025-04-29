@@ -27,10 +27,15 @@ def update_user_info(request):
         user.first_name = new_username
         user.username = new_email  # If you want email as username
 
+        if not new_email or not new_username:
+            return render(request, 'user_info.html', {
+                'error': 'All fields are required',
+                'user': request.user
+            })
         if User.objects.filter(username=new_email).exists():
             return render(request, 'user_info.html', {'error': 'Email already exists'})
         user.save()
 
-        # return redirect('user_profile')  # or wherever you want to redirect
+
 
     return redirect('user_profile')
