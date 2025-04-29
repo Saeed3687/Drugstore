@@ -46,6 +46,9 @@ def user_profile(request):
 
 def search(request):
     query = request.GET.get('q', '')
-    results = Product.objects.filter(name__icontains=query) if query else []
+    # Product.objects.filter(name__icontains=query)
 
-    return render(request, 'search.html', {'query': query, 'results': results})
+    products = Product.objects.filter(name__icontains=query) if query else []
+
+    return render(request, 'search.html', {'products': products, 'query': query})
+

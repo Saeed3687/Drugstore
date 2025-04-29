@@ -9,15 +9,17 @@
 {% block content %}
   <h2>Search Results for "{{ query }}"</h2>
 
-  {% if results %}
+  {% if products %}
     <ul>
-      {% for product in results %}
+      {% for product in products %}
         <li>{{ product.name }} - ${{ product.price }}</li>
       {% endfor %}
     </ul>
   {% else %}
     <p>No products found.</p>
   {% endif %}
+
+
 {% endblock %}
 
 </body>
