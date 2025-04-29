@@ -39,3 +39,36 @@ class LoginViewTest(TestCase):
         response = self.client.get(reverse('login'))
         self.assertRedirects(response, reverse('mainPage'))
 
+
+class SignupViewTest(TestCase):
+
+    def test_signup_page_loads(self):
+        response = self.client.get(reverse('register'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'logPage.html')
+
+    def test_successful_signup_creates_user_and_redirects_to_login(self):
+        response = self.client.post(reverse('register'), {
+            'name': 'Test User',
+            'email': 'testuser@example.com',
+            'password': 'testpassword123',
+        })
+
+      
+        user_exists = User.objects.filter(email='testuser@example.com').exists()
+        self.assertTrue(user_exists)
+        self.assertRedirects(response, reverse('login'))
+
+    def test_signup_fails_if_user_already_exists(self):
+        User.objects.create_user(username='test@example.com', email='test@example.com', password='testpassword')
+
+        response = self.client.post(reverse('register'), {
+            'name': 'Test User',
+            'email': 'test@example.com',
+            'password': 'anotherpassword',
+        })
+
+        self.assertEqual(User.objects.filter(email='test@example.com').count(), 1)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'logPage.html')
+        self.assertContains(response, "Email already exists")

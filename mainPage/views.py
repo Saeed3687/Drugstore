@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .models import Product, Category
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 # Create your views here.
 
 
@@ -41,5 +42,23 @@ def category_products(request, category_id):
     return render(request, 'category.html', {'category': category, 'products': products})
 
 @login_required
+def add_changes(request):
+    if request.method == "POST":
+        name = request.POST['name']
+        email = request.POST['email']
+        password = request.POST['password']
+
+        user = User.objects.get(email=email)
+        user.first_name = name
+        user.email = email
+        # Check if user already exists
+        if User.objects.filter(username=email).exists():
+            return render(request, 'logPage.html', {'error': 'Email already exists'})
+        user.save()
+        return redirect('user_info')
+
+    return render(request, 'logPage.html')
+@login_required
 def user_profile(request):
     return render(request, 'user_profile.html', {'user': request.user})
+

@@ -191,21 +191,29 @@
           </div>
         </div>
         <div class="col-md-7">
-          <div class="custom-boxs" style="background: none; margin: 20px;">
-            <div class="info-box">
-              <label for="phone" class="form-label">
-                 email <span style="color: red;">*</span>
-              </label>
-              <input type="text" class="form-control custom-input" id="phone" name="phone" value="{{ user.email }}" required>
+          <form method="POST" action="{% url 'update_user_info' %}">
+            {% csrf_token %}
+            <div class="custom-boxs" style="background: none; margin: 20px;">
+              <div class="info-box">
+                <label for="email" class="form-label">
+                   email <span style="color: red;">*</span>
+                </label>
+                
+                <input type="email" class="form-control custom-input" id="email" name="email" value="{{ user.email }}" required>
+                {% if error != None %}
+                  <h5>{{error}}</h5>
+                {% endif %}
+              </div>
+              <div class="info-box">
+                <label for="username" class="form-label">
+                   username <span style="color: red;">*</span>
+                </label>
+                <input type="text" class="form-control custom-input" id="username" name="username" value="{{ user.first_name }}" required>
+              </div>
+              <button type="submit" class="save-button">save changes</button>
             </div>
-            <div class="info-box">
-              <label for="phone" class="form-label">
-                 username <span style="color: red;">*</span>
-              </label>
-              <input type="text" class="form-control custom-input" id="phone" name="phone" value="{{ user.first_name }}" required>
-            </div>
-            <button type="submit" class="save-button">save changes</button>
-          </div>
+          </form>
+          
         </div>
       </div>
     </div>
