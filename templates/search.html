@@ -1,27 +1,351 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>Medion</title>
+
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
+
+  <!-- font awesome style -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Custom styles for this template -->
+  <link href="{%static 'css/style.css' %}" rel="stylesheet" />
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="{%static 'css/bootstrap.css' %}" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700|Roboto:400,700&display=swap" rel="stylesheet">
+
+  
+  <!-- responsive style -->
+  <link href="{%static 'css/responsive.css' %}" rel="stylesheet" />
+  
+
+  <style>
+    .product-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-left: 400px;
+      margin-top: 50px ;
+    }
+
+    .product-card {
+      width: 250px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      background-color: #fff;
+      transition: transform 0.2s;
+    }
+
+    .product-card:hover {
+      transform: scale(1.02);
+    }
+
+    .product-header {
+      background-color: #333;
+      color: white;
+      padding: 8px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .product-image {
+      width: 100%;
+      height: 180px;
+      object-fit: contain;
+      padding: 10px;
+      background-color: #f9f9f9;
+    }
+
+    .product-body {
+      padding: 15px;
+      text-align: center;
+    }
+
+    .product-name {
+      font-weight: bold;
+      margin: 10px 0;
+      text-transform: uppercase;
+    }
+
+    .product-price {
+      color: #00bcd4;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .product-stars {
+      color: #fbc02d;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+  </style>
 </head>
-<body>
-{% block content %}
-  <h2>Search Results for "{{ query }}"</h2>
 
-  {% if products %}
-    <ul>
-      {% for product in products %}
-        <li>{{ product.name }} - ${{ product.price }}</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No products found.</p>
-  {% endif %}
+<body class="sub_page">
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container">
+        <div class="top_contact-container">
+          <div class="tel_container">
+            <a href="">
+              <img src="{%static 'images/telephone-symbol-button.png' %}" alt=""> Call : +98 9936757881
+            </a>
+          </div>
+          <div class="social-container">
+            <a href="">
+              <img src="{%static 'images/fb.png' %}" alt="" class="s-1">
+            </a>
+            <a href="">
+              <img src="{%static 'images/twitter.png' %}" alt="" class="s-2">
+            </a>
+            <a href="">
+              <img src="{%static 'images/instagram.png' %}" alt="" class="s-3">
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
+          <a class="navbar-brand" href="index.html">
+            <img src="{%static 'images/logo.png' %}" alt="">
+            <span>
+              Medion
+            </span>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
+              <ul class="navbar-nav  ">
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'mainPage' %}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href=""> About </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href=""> Medicine </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href=""> Online Buy </a>
+                </li>
+               
+                
+                
+              </ul>
+              <form class="form-inline" method="get" action="{% url 'search' %}">
+                <input type="search" name="q" placeholder="Search">
+                <button class="btn my-2 my-sm-0 nav_search-btn" type="submit"></button>
+              </form>
+              <div class="login_btn-contanier ml-0 ml-lg-5">
+                <img src="{%static 'images/user.png' %}" alt="">
+                {% if user.is_authenticated %}
+                <a href="{% url 'user_profile' %}" class="btn-outline"> {{user.first_name}}</a>
+                <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+                  <button type="submit" class="btn-outline">Logout</button>
+                </form>
+                {% else %}
+                  <a href="{% url 'login' %}" class="btn-outline"> Login</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+        </nav>
+      </div>
+    <!-- end header section -->
+  </div>
+  <!-- contact section -->
+  <section class="contact_section layout_padding">
+    <div class="container">
+      <div class="row">
+        <div class="custom_heading-container ">
+          <h2>
+            Search Results for "{{ query }}"
+          </h2>
+        </div>
+      </div>
+    </div>
+    {% if products %}
+      <div class="product-grid">
+        {% for product in products %}
+          <div class="product-card">
+            <div class="product-header">
+              <a href="" style="color: white;">
+                Buy Now
+              </a>
+            </div>
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+            <div class="product-body">
+              <div class="product-stars">
+                {% for i in "12345"|make_list %}
+                  <span class="star">{% if forloop.counter <= product.rating %}★{% else %}☆{% endif %}</span>
+                {% endfor %}
+              </div>
+              <div class="product-name">{{ product.name }}</div>
+              <div class="product-price">${{ product.price }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="margin-top: 50px; margin-left: 400px; font-family: Poppins; font-size: large;">No products found.</p>
+    {% endif %}
+     
+  </section>
+
+  <!-- end contact section -->
+
+  <!-- info section -->
+  <section class="info_section layout_padding2">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="info_contact">
+            <h4>
+              Contact
+            </h4>
+            <div class="box">
+              <div class="img-box">
+                <img src="images/telephone-symbol-button.png" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  +98 9936757881
+                </h6>
+              </div>
+            </div>
+            <div class="box">
+              <div class="img-box">
+                <img src="images/email.png" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  saied.karbalai.1380@gmail.com
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_menu">
+            <h4>
+              Menu
+            </h4>
+            <ul class="navbar-nav  ">
+              <li class="nav-item active">
+                <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="about.html"> About </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="medicine.html"> Medicine </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="buy.html"> Online Buy </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="info_news">
+            <h4>
+              newsletter
+            </h4>
+            <form action="">
+              <input type="text" placeholder="Enter Your email">
+              <div class="d-flex justify-content-center justify-content-end mt-3">
+                <button>
+                  Subscribe
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
 
-{% endblock %}
+  <!-- end info section -->
 
+  <!-- footer section -->
+  <section class="container-fluid footer_section">
+    <p>
+      &copy; 2025 All Rights Reserved. Design by Saeed and Qasim
+    </p>
+  </section>
+  <!-- footer section -->
+  <script src="{% static 'main_script.js' %}"></script>
+  <script type="text/javascript" src="{% static 'jquery-3.4.1.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bootstrap.js'  %}"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js">
+  </script>
+  <script type="text/javascript">
+    $(".owl-carousel").owlCarousel({
+      loop: true,
+      margin: 10,
+      nav: true,
+      navText: [],
+      autoplay: true,
+      responsive: {
+        0: {
+          items: 1
+        },
+        600: {
+          items: 2
+        },
+        1000: {
+          items: 4
+        }
+      }
+    });
+  </script>
+  <script type="text/javascript">
+    $(".owl-2").owlCarousel({
+      loop: true,
+      margin: 10,
+      nav: true,
+      navText: [],
+      autoplay: true,
+
+      responsive: {
+        0: {
+          items: 1
+        },
+        600: {
+          items: 2
+        },
+        1000: {
+          items: 4
+        }
+      }
+    });
+  </script>
 </body>
-</html>
 
+</html>
