@@ -44,6 +44,16 @@
       font-family: "Poppins", sans-serif;
       background-color: white !important;
     }
+    .star {
+      font-size: 30px;
+      color: gold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .star:hover {
+      transform: scale(1.2);
+    }
 
     .custom-box {
       border: 1px solid #10e7f4 !important;
@@ -153,18 +163,32 @@
   
       <div class="row layout_padding2 align-items-center">
         <!-- Product Image -->
+       
         <div class="col-md-6">
-          <img src="{% static 'images/p-1.jpg' %}" alt="Product Image"
-               style="width: 100%; height: auto; border-radius: 12px; border: 1px solid #ccc;">
+          <img src="{{ product.image.url }}" alt="{{ product.name }}"
+          style="width: 100%; height: 555px !important; object-fit: fill; height: auto; border-radius: 12px; border: 1px solid #ccc;">
         </div>
   
         <!-- Product Description -->
         <div class="col-md-6">
           <div class="p-3" style="background: none; font-family: Poppins, sans-serif;">
-            <h3>Medicine Name</h3>
+            <h3>{{ product.name }}</h3>
             <p><strong>Brand:</strong> Example Pharma</p>
-            <p><strong>Price:</strong> $25.00</p>
+            <p><strong>Price:</strong> {{ product.price }}</p>
             <p><strong>Description:</strong> This is a sample medicine used to treat XYZ. It is effective, safe, and approved by the FDA. Please consult with a doctor before use.</p>
+            <form method="post" action="{% url 'rate_product' product.id %}">
+              {% csrf_token %}
+              <div class="rating">
+                {% for i in "54321"|make_list %}
+                  <label>
+                    <input type="radio" name="rating" value="{{ i }}" style="display:none;" onchange="this.form.submit();">
+                    <span class="star" onmouseover="highlightStars(this)" onmouseout="resetStars(this)" onclick="selectStar(this)" style="font-size: 24px; color: gold;">
+                      ☆
+                    </span>
+                  </label>
+                {% endfor %}
+              </div>
+            </form>
             <button class="btn btn-info mt-3">Add to Cart</button>
           </div>
         </div>
@@ -266,6 +290,29 @@
       </div>
     </div>
   </section>
+  <!-- Rating Modal -->
+  <div id="ratingModal" style="display: none; position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); background: white; padding: 20px; border: 2px solid #10e7f4; border-radius: 10px; z-index: 9999;">
+    <h4>Rate this product</h4>
+      <form id="ratingForm" method="POST" action="{% url 'rate_product' product.id %}">
+      {% csrf_token %}
+      
+        <div class="rating" data-current-rating=2>
+          {% for i in "54321"|make_list %}
+            <label>
+              <input type="radio" name="rating" value="{{ i }}" style="display:none;" onchange="this.form.submit();">
+              <span class="star" onmouseover="highlightStars(this)" onmouseout="resetStars(this)" onclick="selectStar(this)" style="font-size: 24px; color: gold;">
+                ☆
+              </span>
+            </label>
+          {% endfor %}
+        </div>
+      
+      <button type="submit" class="btn btn-info mt-3">Submit</button>
+      <button type="button" onclick="hideModal()" class="btn btn-secondary mt-3">Cancel</button>
+    </form>
+  </div>
+
 
 
   <!-- end info section -->
@@ -323,6 +370,39 @@
       }
     });
   </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const ratingDiv = document.querySelector(".rating");
+      const allStars = ratingDiv.querySelectorAll(".star");
+       currentRating = {{ product.rating }};
+
+      // Show current rating when page loads
+      setStars(currentRating);
+
+      function setStars(rating) {
+        allStars.forEach((star, index) => {
+          star.textContent = index < rating ? '★' : '☆';
+        });
+      }
+
+      window.highlightStars = function (star) {
+        const index = [...allStars].indexOf(star);
+        allStars.forEach((s, i) => {
+          s.textContent = i <= index ? '★' : '☆';
+        });
+      };
+
+      window.resetStars = function () {
+        setStars(currentRating);
+      };
+
+      window.selectStar = function (star) {
+        const input = star.parentNode.querySelector('input');
+        input.checked = true;
+        input.dispatchEvent(new Event('change'));
+      };
+    });
+</script>
 </body>
 
 </html>

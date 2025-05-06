@@ -514,15 +514,14 @@
       <div class="carousel-wrap layout_padding2">
         <div class="owl-carousel">
           {% for product in products %}
-            <div class="item">
+          <div class="item">
+            <a href="{% url 'productPage' product.id %}" style="text-decoration: none; color: inherit;">
               <div class="box">
                 <div class="btn_container">
-                  <a href="">
-                    Buy Now
-                  </a>
+                  <span>Buy Now</span>
                 </div>
                 <div class="img-box">
-                  <img src="{{ product.image }}" alt="{{ product.name }}">
+                  <img src="{{ product.image.url }}" alt="{{ product.name }}">
                 </div>
                 <div class="detail-box">
                   <div class="star_container">
@@ -531,20 +530,15 @@
                     {% endfor %}
                   </div>
                   <div class="text">
-                    <h6>
-                      {{ product.name }}
-                    </h6>
-                    <h6 class="price">
-                      <span>
-                        $
-                      </span>
-                      {{ product.price }}
-                    </h6>
+                    <h6>{{ product.name }}</h6>
+                    <h6 class="price"><span>$</span>{{ product.price }}</h6>
                   </div>
                 </div>
               </div>
-            </div>
+            </a>
+          </div>
           {% endfor %}
+
         </div>
       </div>
     </div>
