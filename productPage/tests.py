@@ -3,39 +3,39 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from mainPage.models import Product, Category
 from django.core.files.uploadedfile import SimpleUploadedFile
-# # Create your tests here.
-# class RateProductViewTests(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#         image = SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg')
-#         self.category = Category.objects.create(name="Test Category")
-#         self.product = Product.objects.create(
-#             name="Test Product",
-#             price=10.99,
-#             rating=4.0,
-#             num_ratings=1,
-#             category=self.category,
-#             image = image
-#         )
-#         self.url = reverse('rate_product', args=[self.product.id])  # You must have named your url 'rate_product'
+# Create your tests here.
+class RateProductViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        image = SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg')
+        self.category = Category.objects.create(name="Test Category")
+        self.product = Product.objects.create(
+            name="Test Product",
+            price=10.99,
+            rating=4.0,
+            num_ratings=1,
+            category=self.category,
+            image = image
+        )
+        self.url = reverse('rate_product', args=[self.product.id])  # You must have named your url 'rate_product'
 
-#     def test_rating_updated(self):
-#         response = self.client.post(self.url, {'rating': '5'})
-#         self.product.refresh_from_db()
-#         self.assertEqual(response.status_code, 302)  # Should redirect
+    def test_rating_updated(self):
+        response = self.client.post(self.url, {'rating': '5'})
+        self.product.refresh_from_db()
+        self.assertEqual(response.status_code, 302)  # Should redirect
 
-#         self.assertAlmostEqual(self.product.rating, (4.0 + 5.0) / 2)
+        self.assertAlmostEqual(self.product.rating, (4.0 + 5.0) / 2)
 
-#     def test_num_ratings_updated(self):
-#         response = self.client.post(self.url, {'rating': '5'})
-#         self.product.refresh_from_db()
-#         self.assertEqual(response.status_code, 302)  # Should redirect
-#         self.assertEqual(self.product.num_ratings, 2)
+    def test_num_ratings_updated(self):
+        response = self.client.post(self.url, {'rating': '5'})
+        self.product.refresh_from_db()
+        self.assertEqual(response.status_code, 302)  # Should redirect
+        self.assertEqual(self.product.num_ratings, 2)
 
-#     def test_url_works(self):
-#         response = self.client.get(self.url)
-#         self.assertEqual(response.status_code, 200)
-#         self.assertContains(response, "Test Product")
+    def test_url_works(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Test Product")
 
 from parameterized import parameterized
 
