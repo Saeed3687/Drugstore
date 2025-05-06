@@ -13,7 +13,7 @@ class LoginViewTest(TestCase):
 
     def test_is_in_database(self):
         
-        self.assertEqual(real_user.first_name,'fa')
+        self.assertEqual(real_user.first_name,'fa3')
         self.assertTrue(check_password('123456', real_user.password))
 
     def test_login_successful(self):
@@ -72,3 +72,5 @@ class SignupViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'logPage.html')
         self.assertContains(response, "Email already exists")
+
+

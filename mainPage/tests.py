@@ -92,3 +92,4 @@ class ProductSearchViewTests(TestCase):
         response = self.client.get(reverse('search'), {'q': 'mol'})
         self.assertContains(response, "Paracetamol")
        
+
