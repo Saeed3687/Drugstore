@@ -6,12 +6,14 @@ from .models import Product, Category
 from userProfile.models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-# Create your views here.
+from django.views.decorators.cache import never_cache
+
+
 
 
 def home(request):
     return render(request,'home.html')
-
+@never_cache
 def mainPage(request):
 
     categories = Category.objects.prefetch_related('products').all()  # Fetch categories with products

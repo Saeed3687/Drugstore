@@ -24,4 +24,5 @@
 - python manage.py collectstatic
 
 ## Test
+
 - python manage.py test login
