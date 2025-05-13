@@ -6,16 +6,12 @@ from .models import Product,Category
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'product_count')
-
-    def product_count(self, obj):
-        return obj.products.count()  # Count products in this category
-
-    product_count.short_description = 'Number of Products'
+    list_display = ['name']
+    search_fields = ['name']
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'rating', 'num_ratings')
-    search_fields = ('name',)
-    list_filter = ('price', 'rating')
-    ordering = ('-rating',)  # Sort by highest rating
+    list_display = ['name', 'category', 'price', 'available']
+    list_filter = ['available', 'category']
+    search_fields = ['name', 'description']
+    list_editable = ['price', 'available']

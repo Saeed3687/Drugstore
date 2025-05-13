@@ -19,6 +19,7 @@ class Order(models.Model):
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     shipping_address = models.CharField(max_length=255, blank=True)
     phone_number = models.CharField(max_length=20, blank=True)
+    is_paid = models.BooleanField(default=False)
     
     @staticmethod
     def generate_tracking_code():

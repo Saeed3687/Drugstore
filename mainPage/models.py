@@ -20,6 +20,7 @@ class Product(models.Model):
     rating = models.FloatField(default=0.0)  # Store average rating
     num_ratings = models.IntegerField(default=0)  # Track number of ratings
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products", null=True, blank=True)
+    available = models.BooleanField(default=True)  # Add this field
 
 
     def update_rating(self, new_rating):
