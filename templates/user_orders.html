@@ -200,21 +200,20 @@
         </div>
         <div class="col-md-7">
           <div class="custom-boxs" style="margin-top: 50px;">
+            {% for order in user.orders.all %}
             <div class="custom-box">
-              <p id="copyText" onclick="copyToClipboard()" title="click for copy" style="cursor: pointer; margin-bottom: 0px;">
-                #ORD001234
+              <p id="copyText-{{ order.id }}" onclick="copyToClipboard('{{ order.tracking_code }}', {{ order.id }})" title="click to copy" style="cursor: pointer; margin-bottom: 0px;">
+                #{{ order.tracking_code }}
+                <small class="text-muted" style="float: right;">{{ order.created_at|date:"M d, Y" }}</small>
+                <br>
+                <small class="text-muted">Total: ${{ order.total_amount }}</small>
               </p>
             </div>
+            {% empty %}
             <div class="custom-box">
-              <p id="copyText" onclick="copyToClipboard()" title="click for copy" style="cursor: pointer; margin-bottom: 0px;">
-                #ORD001234
-              </p>
+              <p style="margin-bottom: 0px;">No orders yet</p>
             </div>
-            <div class="custom-box">
-              <p id="copyText" onclick="copyToClipboard()" title="click for copy" style="cursor: pointer; margin-bottom: 0px;">
-                #ORD001234
-              </p>
-            </div>
+            {% endfor %}
           </div>
         </div>
       </div>
@@ -351,10 +350,16 @@
     });
   </script>
   <script>
-    function copyToClipboard() {
-      const text = document.getElementById("copyText").innerText;
+    function copyToClipboard(text, id) {
       navigator.clipboard.writeText(text)
-        .then(() => alert("متن کپی شد!"))
+        .then(() => {
+          const copyText = document.getElementById(`copyText-${id}`);
+          copyText.style.color = '#007bff';
+          setTimeout(() => {
+            copyText.style.color = '';
+          }, 1000);
+          alert("متن کپی شد!");
+        })
         .catch(err => console.error("خطا در کپی:", err));
     }
   </script>

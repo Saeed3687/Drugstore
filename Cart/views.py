@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from .models import Cart, CartItem
 from mainPage.models import Product
 from django.contrib import messages
-from userProfile.models import UserProfile
+from userProfile.models import UserProfile, Order
 
 # Create your views here.
 
@@ -86,9 +86,19 @@ def payment(request):
     cart = get_object_or_404(Cart, user=request.user, is_paid=False)
     if request.method == 'POST':
         # Here you would integrate with your payment gateway
-        # For now, we'll just mark the cart as paid
+        # For now, we'll just mark the cart as paid and create an order
+        
+        # Create order with tracking code
+        order = Order.objects.create(
+            user=request.user,
+            tracking_code=Order.generate_tracking_code(),
+            total_amount=cart.get_total_price()
+        )
+        
+        # Mark cart as paid
         cart.is_paid = True
         cart.save()
-        messages.success(request, "Payment successful!")
-        return redirect('mainPage')
+        
+        messages.success(request, f"Payment successful! Your tracking code is {order.tracking_code}")
+        return redirect('user_orders')
     return render(request, 'pay.html', {'cart': cart})
