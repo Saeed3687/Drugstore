@@ -486,7 +486,11 @@
             <div class="item">
               <div class="box">
                 <div class="img-box">
-                  <img src="" alt="{{ category.name }}">
+                  {% if category.image %}
+                    <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                  {% else %}
+                    <img src="{% static 'images/medicine.png' %}" alt="{{ category.name }}">
+                  {% endif %}
                 </div>
                 <div class="detail-box">
                   <div class="text">
