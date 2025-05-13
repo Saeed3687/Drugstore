@@ -224,23 +224,26 @@
             <hr>
             <div class="d-flex justify-content-between">
               <span>Total Price:</span>
-              <strong>$3,642.00</strong>
+              <strong>${{ cart.get_total_price }}</strong>
             </div>
             <div class="d-flex justify-content-between mt-2">
               <span>Your Savings:</span>
-              <strong style="color: #00bcd4;">$1,088.30</strong>
+              <strong style="color: #00bcd4;">${{ savings|default:"0.00" }}</strong>
             </div>
             <hr>
             <div class="d-flex justify-content-between">
               <span>Final Amount:</span>
-              <strong >$2,553.70</strong>
+              <strong>${{ cart.get_total_price }}</strong>
             </div>
-            <button class="btn btn-block mt-4 my-checkout">Proceed to Checkout</button>
+            {% if cart.items.exists %}
+            <a href="{% url 'proceed_to_checkout' %}" class="btn btn-block mt-4 my-checkout">Proceed to Checkout</a>
+            {% endif %}
           </div>
         </div>
   
         <!-- Right: Product Table -->
         <div class="col-md-8">
+          {% if cart.items.exists %}
           <table class="table table-bordered text-center" style="font-family: poppins;">
             <thead class="thead-light">
               <tr>
@@ -248,31 +251,43 @@
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Total</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
+              {% for item in cart.items.all %}
               <tr>
                 <td>
                   <div class="d-flex align-items-center">
-                    <img src="{% static 'images/p-1.jpg' %}" alt="Product" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
-                    <span>Hyper Whey Creatine Powder 2270g</span>
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                    <span>{{ item.product.name }}</span>
                   </div>
                 </td>
-                <td>$3,642.00</td>
+                <td>${{ item.price }}</td>
                 <td>
                   <div class="d-flex justify-content-center align-items-center">
-                    <button class="btn btn-sm btn-outline-secondary px-2 quantity-minus" type="button">-</button>
-                    <input type="text" value="1" class="form-control mx-2 text-center quantity-input" style="width: 50px;" readonly>
-                    <button class="btn btn-sm btn-outline-secondary px-2 quantity-plus" type="button">+</button>
+                    <form method="post" action="{% url 'update_quantity' item.id %}" class="quantity-form">
+                      {% csrf_token %}
+                      <button type="button" class="btn btn-sm btn-outline-secondary px-2 quantity-minus">-</button>
+                      <input type="number" name="quantity" value="{{ item.quantity }}" class="form-control mx-2 text-center quantity-input" style="width: 50px;" min="1">
+                      <button type="button" class="btn btn-sm btn-outline-secondary px-2 quantity-plus">+</button>
+                    </form>
                   </div>
                 </td>
-                
-                <td>$3,642.00</td>
-                
+                <td>${{ item.get_cost }}</td>
+                <td>
+                  <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm">Remove</a>
+                </td>
               </tr>
-              <!-- You can loop more rows here with Django if needed -->
+              {% endfor %}
             </tbody>
           </table>
+          {% else %}
+          <div class="text-center mt-4">
+            <h3>Your cart is empty</h3>
+            <a href="{% url 'mainPage' %}" class="btn btn-primary mt-3">Continue Shopping</a>
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -409,24 +424,49 @@
     });
   </script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.quantity-minus').forEach(button => {
-        button.addEventListener('click', () => {
-          const input = button.parentElement.querySelector('.quantity-input');
-          let value = parseInt(input.value) || 0;
-          if (value > 1) {
-            input.value = value - 1;
-          }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle quantity updates
+        document.querySelectorAll('.quantity-form').forEach(form => {
+            const input = form.querySelector('.quantity-input');
+            const minusBtn = form.querySelector('.quantity-minus');
+            const plusBtn = form.querySelector('.quantity-plus');
+
+            minusBtn.addEventListener('click', () => {
+                let value = parseInt(input.value);
+                if (value > 1) {
+                    input.value = value - 1;
+                    updateQuantity(form);
+                }
+            });
+
+            plusBtn.addEventListener('click', () => {
+                let value = parseInt(input.value);
+                input.value = value + 1;
+                updateQuantity(form);
+            });
+
+            input.addEventListener('change', () => {
+                updateQuantity(form);
+            });
         });
-      });
-  
-      document.querySelectorAll('.quantity-plus').forEach(button => {
-        button.addEventListener('click', () => {
-          const input = button.parentElement.querySelector('.quantity-input');
-          let value = parseInt(input.value) || 0;
-          input.value = value + 1;
-        });
-      });
+
+        function updateQuantity(form) {
+            const formData = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the total price
+                    location.reload(); // Refresh to update all totals
+                }
+            });
+        }
     });
   </script>
   

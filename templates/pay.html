@@ -165,13 +165,10 @@
                 <li class="nav-item">
                   <a class="nav-link" href=""> Medicine </a>
                 </li>
-                <li class="nav-item position-relative">
-                  <a class="nav-link d-flex align-items-center" href="">
-                    <img src="{% static 'images/Cart.png' %}" alt="Cart" style="width: 30px; height: 30px; margin-right: 5px;">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'view_cart' %}">
+                    <img src="{% static 'images/Cart.png' %}" alt="Cart" style="width: 30px; height: 30px; margin-right: 0px;">
                     My Cart
-                    <span class="badge badge-pill badge-danger ml-2" style="font-size: 0.75rem;">
-                      0
-                    </span>
                   </a>
                 </li>
                 
@@ -202,18 +199,86 @@
     <!-- end header section -->
   </div>
   <!-- contact section -->
-  <section class="contact_section layout_padding" style="font-family: poppins; color: #00bcd4;">
-    <div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
-      <div class="text-center border p-5 rounded shadow" style="max-width: 500px;">
-        <h2 class="mb-4 text-success" style="color: #00bcd4 !important;">✅ Thank You for Your Purchase!</h2>
-        <p class="mb-3">Your payment was successful. Your order is being processed.</p>
-        <p class="mb-4">Below is your interception code:</p>
-        
-        <div class="bg-light p-3 rounded border border-success font-weight-bold text-monospace text-primary" style="font-size: 20px; border-color: #00bcd4 !important;">
-          {{ interception_code }}
+  <section class="contact_section layout_padding">
+    <div class="container">
+      <div class="row">
+        <div class="custom_heading-container">
+          <h2>Payment</h2>
         </div>
-  
-        <a href="{% url 'mainPage' %}" class="btn btn-block mt-4 my-checkout">Back to Home</a>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="payment-container" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+            <h4 class="mb-4">Order Total: ${{ cart.get_total_price }}</h4>
+            
+            <form method="post" action="{% url 'payment' %}">
+              {% csrf_token %}
+              
+              <div class="payment-methods mb-4">
+                <h5>Select Payment Method</h5>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="payment_method" id="parsian" value="parsian" checked>
+                  <label class="form-check-label" for="parsian">
+                    Parsian Payment
+                  </label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="payment_method" id="mellat" value="mellat">
+                  <label class="form-check-label" for="mellat">
+                    Mellat Gateway
+                  </label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="payment_method" id="saman" value="saman">
+                  <label class="form-check-label" for="saman">
+                    Saman Kish
+                  </label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="radio" name="payment_method" id="zarinpal" value="zarinpal">
+                  <label class="form-check-label" for="zarinpal">
+                    Zarinpal Secure
+                  </label>
+                </div>
+              </div>
+
+              <div class="order-summary mb-4">
+                <h5>Order Summary</h5>
+                {% for item in cart.items.all %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div>
+                    {{ item.product.name }} x {{ item.quantity }}
+                  </div>
+                  <div>
+                    ${{ item.get_cost }}
+                  </div>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between">
+                  <strong>Total:</strong>
+                  <strong>${{ cart.get_total_price }}</strong>
+                </div>
+              </div>
+
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="terms" required>
+                <label class="form-check-label" for="terms">
+                  I agree to the <a href="#">terms and conditions</a>
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block my-checkout">Confirm Payment</button>
+            </form>
+
+            <div class="mt-3">
+              <small class="text-muted">
+                Your payment information is processed securely. We do not store credit card details.
+              </small>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>

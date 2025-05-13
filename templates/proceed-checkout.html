@@ -165,7 +165,7 @@
                   <a class="nav-link" href=""> Medicine </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="">
+                  <a class="nav-link" href="{% url 'view_cart' %}">
                     <img src="{% static 'images/Cart.png' %}" alt="Cart" style="width: 30px; height: 30px; margin-right: 0px;">
                     My Cart
                   </a>
@@ -197,133 +197,77 @@
     <!-- end header section -->
   </div>
   <!-- contact section -->
-  <section class="contact_section layout_padding" style="font-family: poppins;">
+  <section class="contact_section layout_padding">
     <div class="container">
-      <div class="custom_heading-container mb-4">
-        <h2>Checkout</h2>
-      </div>
       <div class="row">
-  
-        <!-- Left: Order Summary -->
-        <div class="col-md-6 mb-4">
-          <h4>Your Order</h4>
-          <div class="border rounded p-3">
-            <div class="d-flex justify-content-between font-weight-bold border-bottom pb-2 mb-2">
-              <span>Product</span>
-              <span>Total Price</span>
-            </div>
+        <div class="custom_heading-container">
+          <h2>Checkout</h2>
+        </div>
+      </div>
 
-            <!-- Product List -->
-            <div class="d-flex justify-content-between mb-2">
-              <div>Hyper Whey Creatine Powder 2270g</div>
-              <div>$3,642.00</div>
-            </div>
-
-            <div class="d-flex justify-content-between mb-2">
-              <div>Vitamin C Tablets</div>
-              <div>$250.00</div>
-            </div>
-
-            <!-- Final Total -->
-            <hr>
-            <div class="d-flex justify-content-between">
-              <strong>Total:</strong>
-              <strong>$3,892.00</strong>
-            </div>
-
-            <div class="d-flex justify-content-between">
-              <span>Total Price:</span>
-              <span>$3,642.00</span>
-            </div>
-            <div class="d-flex justify-content-between mt-2">
-              <span>Shipping:</span>
-              <div>
-                <label><input type="radio" name="shipping" checked> Free Shipping</label><br>
-                <label><input type="radio" name="shipping"> Pickup from pharmacy</label>
+      <div class="row">
+        <!-- Left: Shipping Information -->
+        <div class="col-md-6">
+          <div class="form-container" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+            <h4 class="mb-4">Shipping Information</h4>
+            <form action="{% url 'proceed_to_checkout' %}" method="post">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" class="form-control" id="fullName" name="fullName" value="{{ user.first_name }}" required>
               </div>
-            </div>
-            <hr>
-            <div class="d-flex justify-content-between">
-              <span>Final Total:</span>
-              <strong class="text-success">$3,642.00</strong>
-            </div>
-            <div class="d-flex justify-content-between mt-2">
-              <span>You Saved:</span>
-              <strong style="color: #00bcd4;">$1,088.30</strong>
-            </div>
-  
-            <hr>
-            <h5>Payment Method</h5>
-            <label><input type="radio" name="payment" checked> Parsian Payment</label><br>
-            <label><input type="radio" name="payment"> Mellat Gateway</label><br>
-            <label><input type="radio" name="payment"> Saman Kish</label><br>
-            <label><input type="radio" name="payment"> Zarinpal Secure</label>
-  
-            <p class="text-muted mt-3 small">
-              Your information will be used securely through trusted gateways. For details, see our <a href="#">Privacy Policy</a>.
-            </p>
+              <div class="form-group">
+                <label for="address">Address</label>
+                <textarea class="form-control" id="address" name="address" rows="3" required>{{ profile.address }}</textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="zipCode">ZIP Code <small class="text-muted">(Optional)</small></label>
+                  <input type="text" class="form-control" id="zipCode" name="zipCode">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" class="form-control" id="phone" name="phone" value="{{ profile.phone_number }}" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block my-checkout">Proceed to Payment</button>
+            </form>
           </div>
         </div>
-  
-        <!-- Right: User Info Form -->
+
+        <!-- Right: Order Summary -->
         <div class="col-md-6">
-          <h4>Your Information</h4>
-          <form>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label>First Name *</label>
-                <input type="text" class="form-control" required>
+          <div class="order-summary" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+            <h4 class="mb-4">Order Summary</h4>
+            {% for item in cart.items.all %}
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="d-flex align-items-center">
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                <div>
+                  <h6 class="mb-0">{{ item.product.name }}</h6>
+                  <small class="text-muted">Quantity: {{ item.quantity }}</small>
+                </div>
               </div>
-              <div class="form-group col-md-6">
-                <label>Last Name *</label>
-                <input type="text" class="form-control" required>
-              </div>
-            </div>
-            
-            
-            <div class="form-group">
-              <label>Address *</label>
-              <input type="text" class="form-control" placeholder="e.g., Azadi St, Block 1, Unit 1" required>
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label>Postal Code (Optional)</label>
-                <input type="text" class="form-control">
-              </div>
-              <div class="form-group col-md-3">
-                <label>Block</label>
-                <input type="text" class="form-control" placeholder="e.g., 21">
-              </div>
-              <div class="form-group col-md-3">
-                <label>Unit</label>
-                <input type="text" class="form-control" placeholder="e.g., 5">
+              <div class="text-right">
+                <strong>${{ item.get_cost }}</strong>
               </div>
             </div>
-            <div class="form-group">
-              <label>Mobile Number *</label>
-              <input type="text" class="form-control" required>
+            {% endfor %}
+            <hr>
+            <div class="d-flex justify-content-between">
+              <span>Subtotal:</span>
+              <strong>${{ cart.get_total_price }}</strong>
             </div>
-            <div class="form-group">
-              <label>Email</label>
-              <input type="email" class="form-control">
+            <div class="d-flex justify-content-between">
+              <span>Shipping:</span>
+              <strong>Free</strong>
             </div>
-            
-  
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" required>
-              <label class="form-check-label">I accept the <a href="#">terms and conditions</a> *</label>
+            <hr>
+            <div class="d-flex justify-content-between">
+              <span>Total:</span>
+              <strong>${{ cart.get_total_price }}</strong>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox">
-              <label class="form-check-label">Make this a confidential shipment (optional)</label>
-            </div>
-            <div class="form-check mb-3">
-              <input class="form-check-input" type="checkbox">
-              <label class="form-check-label">I would like a paper invoice (optional)</label>
-            </div>
-  
-            <button class="btn btn-block mt-4 my-checkout">Pay</button>
-          </form>
+          </div>
         </div>
       </div>
     </div>
