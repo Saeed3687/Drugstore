@@ -200,14 +200,23 @@
         </div>
         <div class="col-md-7">
           <div class="custom-boxs" style="margin-top: 50px;">
-            {% for order in user.orders.all %}
+            {% for order in orders %}
             <div class="custom-box">
-              <p id="copyText-{{ order.id }}" onclick="copyToClipboard('{{ order.tracking_code }}', {{ order.id }})" title="click to copy" style="cursor: pointer; margin-bottom: 0px;">
-                #{{ order.tracking_code }}
-                <small class="text-muted" style="float: right;">{{ order.created_at|date:"M d, Y" }}</small>
-                <br>
-                <small class="text-muted">Total: ${{ order.total_amount }}</small>
-              </p>
+              <div class="d-flex justify-content-between align-items-center">
+                <a href="{% url 'order_details' order.tracking_code %}" style="text-decoration: none; color: inherit; flex-grow: 1;">
+                  <p id="copyText-{{ order.id }}" style="cursor: pointer; margin-bottom: 0px;">
+                    #{{ order.tracking_code }}
+                    <small class="text-muted" style="float: right;">{{ order.created_at|date:"M d, Y" }}</small>
+                    <br>
+                    <small class="text-muted">Total: ${{ order.total_amount }}</small>
+                  </p>
+                </a>
+                <button type="button" onclick="copyTrackingCode('{{ order.tracking_code }}', {{ order.id }})" 
+                        class="btn btn-sm btn-outline-info" 
+                        style="margin-left: 10px; border: none;">
+                  <i class="fa fa-copy"></i>
+                </button>
+              </div>
             </div>
             {% empty %}
             <div class="custom-box">
@@ -350,17 +359,17 @@
     });
   </script>
   <script>
-    function copyToClipboard(text, id) {
-      navigator.clipboard.writeText(text)
-        .then(() => {
-          const copyText = document.getElementById(`copyText-${id}`);
-          copyText.style.color = '#007bff';
-          setTimeout(() => {
-            copyText.style.color = '';
-          }, 1000);
-          alert("متن کپی شد!");
-        })
-        .catch(err => console.error("خطا در کپی:", err));
+    function copyTrackingCode(code, id) {
+      navigator.clipboard.writeText(code).then(function() {
+        const element = document.getElementById(`copyText-${id}`);
+        element.style.color = '#007bff';
+        setTimeout(function() {
+          element.style.color = '';
+        }, 1000);
+        alert("Tracking code copied!");
+      }).catch(function(err) {
+        console.error("Failed to copy:", err);
+      });
     }
   </script>
 </body>

@@ -1,7 +1,7 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from .models import UserProfile
+from .models import UserProfile, Order
 # Create your views here.
 
 
@@ -27,7 +27,8 @@ def userInfo(request):
 
 @login_required
 def userOrders(request):
-    return render(request,"user_orders.html")
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, "user_orders.html", {'orders': orders})
 
 
 
@@ -78,3 +79,11 @@ def update_user_info(request):
 
     # Handle GET request fallback
     return render(request, 'user_info.html', {'user': user, 'profile': profile})
+
+@login_required
+def order_details(request, tracking_code):
+    order = get_object_or_404(Order, tracking_code=tracking_code, user=request.user)
+    return render(request, 'order_details.html', {
+        'order': order,
+        'user': request.user
+    })

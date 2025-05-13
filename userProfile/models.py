@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from mainPage.models import Product
 import random
 import string
 
@@ -16,6 +17,8 @@ class Order(models.Model):
     tracking_code = models.CharField(max_length=10, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    shipping_address = models.CharField(max_length=255, blank=True)
+    phone_number = models.CharField(max_length=20, blank=True)
     
     @staticmethod
     def generate_tracking_code():
@@ -29,4 +32,14 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order {self.tracking_code} by {self.user.username}"
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    product_name = models.CharField(max_length=200)  # Store name in case product is deleted
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def get_total(self):
+        return self.price * self.quantity
 
