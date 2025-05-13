@@ -182,7 +182,7 @@
             <form method="post" action="{% url 'rate_product' product.id %}">
               {% csrf_token %}
               <div class="rating">
-                {% for i in "54321"|make_list %}
+                {% for i in "12345"|make_list %}
                   <label>
                     <input type="radio" name="rating" value="{{ i }}" style="display:none;" onchange="this.form.submit();">
                     <span class="star" onmouseover="highlightStars(this)" onmouseout="resetStars(this)" onclick="selectStar(this)" style="font-size: 24px; color: gold;">
