@@ -18,3 +18,4 @@ class OrderAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'phone_number', 'address']
     search_fields = ['user__username', 'user__email', 'phone_number']
+   

@@ -8,6 +8,7 @@ from .models import Product,Category
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name']
     search_fields = ['name']
+    
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
