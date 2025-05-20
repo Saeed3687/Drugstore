@@ -591,92 +591,51 @@
       </div>
       <div id="carouselExample2Indicators" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
-          <li data-target="#carouselExample2Indicators" data-slide-to="0" class="active"></li>
-          <li data-target="#carouselExample2Indicators" data-slide-to="1"></li>
-          <li data-target="#carouselExample2Indicators" data-slide-to="2"></li>
+          {% if comments %}
+            {% for comment in comments %}
+              <li data-target="#carouselExample2Indicators" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+            {% endfor %}
+          {% else %}
+            <li data-target="#carouselExample2Indicators" data-slide-to="0" class="active"></li>
+          {% endif %}
         </ol>
         <div class="carousel-inner">
-          <div class="carousel-item active">
-            <div class="client_container layout_padding2">
-              <div class="client_detail">
-                <p>
-                  There are many variations of passages of Lorem Ipsum available, but the majority have suffered
-                  alteration in
-                  some form, by injected humour, or randomised words which don't look even slightly believable.
-                </p>
-              </div>
-              <div class="client_box ">
-                <div class="img-box">
-                  <img src="{%static 'images/client.png' %} " alt="">
+          {% if comments %}
+            {% for comment in comments %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="client_container layout_padding2">
+                  <div class="client_detail">
+                    <p>
+                      {{ comment.text }}
+                    </p>
+                  </div>
+                  <div class="client_box">
+                    <div class="name">
+                      <h5>
+                        {{ comment.user.first_name }}
+                      </h5>
+                      <h6>
+                        <span>
+                          {{ comment.product.name }}
+                        </span>
+                        <img src="{% static 'images/quote.png' %}" alt="">
+                      </h6>
+                    </div>
+                  </div>
                 </div>
-                <div class="name">
-                  <h5>
-                    Randomised
-                  </h5>
-                  <h6>
-                    <span>
-                      Client
-                    </span>
-                    <img src="{%static 'images/quote.png' %}" alt="">
-                  </h6>
-                </div>
               </div>
-            </div>
-          </div>
-          <div class="carousel-item">
-            <div class="client_container layout_padding2">
-              <div class="client_detail">
-                <p>
-                  There are many variations of passages of Lorem Ipsum available, but the majority have suffered
-                  alteration in
-                  some form, by injected humour, or randomised words which don't look even slightly believable.
-                </p>
-              </div>
-              <div class="client_box ">
-                <div class="img-box">
-                  <img src="{%static 'images/client.png' %}" alt="">
-                </div>
-                <div class="name">
-                  <h5>
-                    Randomised
-                  </h5>
-                  <h6>
-                    <span>
-                      Client
-                    </span>
-                    <img src="{%static 'images/quote.png' %}" alt="">
-                  </h6>
+            {% endfor %}
+          {% else %}
+            <div class="carousel-item active">
+              <div class="client_container layout_padding2">
+                <div class="client_detail">
+                  <p>
+                    No comments yet. Be the first to share your experience!
+                  </p>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="carousel-item">
-            <div class="client_container layout_padding2">
-              <div class="client_detail">
-                <p>
-                  There are many variations of passages of Lorem Ipsum available, but the majority have suffered
-                  alteration in
-                  some form, by injected humour, or randomised words which don't look even slightly believable.
-                </p>
-              </div>
-              <div class="client_box ">
-                <div class="img-box">
-                  <img src="{%static 'images/client.png' %}" alt="">
-                </div>
-                <div class="name">
-                  <h5>
-                    Randomised
-                  </h5>
-                  <h6>
-                    <span>
-                      Client
-                    </span>
-                    <img src="{%static 'images/quote.png' %}" alt="">
-                  </h6>
-                </div>
-              </div>
-            </div>
-          </div>
+          {% endif %}
         </div>
       </div>
 
@@ -685,67 +644,7 @@
   </section>
   <!-- end client section -->
 
-  <!-- contact section -->
-  <section class="contact_section">
-    <div class="container">
-      <div class="row">
-        <div class="custom_heading-container ">
-          <h2>
-            Request A call back
-          </h2>
-        </div>
-      </div>
-    </div>
-    <div class="container layout_padding2">
-      <div class="row">
-        <div class="col-md-5">
-          <div class="form_contaier">
-            <form>
-              <div class="form-group">
-                <label for="exampleInputName1">Name</label>
-                <input type="text" class="form-control" id="exampleInputName1">
-              </div>
-              <div class="form-group">
-                <label for="exampleInputNumber1">Phone Number</label>
-                <input type="text" class="form-control" id="exampleInputNumber1">
-              </div>
-
-              <div class="form-group">
-                <label for="exampleInputEmail1">Email </label>
-                <input type="email" class="form-control" id="exampleInputEmail1">
-              </div>
-              <div class="form-group ">
-                <label for="inputState">Select medicine</label>
-                <select id="inputState" class="form-control">
-                  <option selected>Medicine 1</option>
-                  <option selected>Medicine 2</option>
-                  <option selected>Medicine 3</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="exampleInputMessage">Message</label>
-                <input type="text" class="form-control" id="exampleInputMessage">
-              </div>
-              <button type="submit" class="">Send</button>
-            </form>
-          </div>
-        </div>
-        <div class="col-md-7">
-          <div class="detail-box">
-            <h3>
-              Get Now Medicines
-            </h3>
-            <p>
-              There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration
-              in some form, by injected humour, or randomised words which don't look even slightly believable.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- end contact section -->
+  
 
   <!-- info section -->
   <section class="info_section layout_padding2">

@@ -204,18 +204,32 @@
       <div class="row mt-5" style="font-family: Poppins;">
         <div class="col-md-12">
           <h4>Comments</h4>
-          <form method="post" action="">
-            {% csrf_token %}
-            <div class="form-group">
-              <textarea name="comment" rows="4" class="form-control" placeholder="Write your comment here..."></textarea>
-            </div>
-            <button type="submit" class="btn btn-info mt-3">Post Comment</button>
-          </form>
-  
-          <!-- Example comment -->
+          {% if user.is_authenticated %}
+            <form method="post" action="{% url 'add_comment' product.id %}">
+              {% csrf_token %}
+              <div class="form-group">
+                <textarea name="comment" rows="4" class="form-control" placeholder="Write your comment here..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-info mt-3">Post Comment</button>
+            </form>
+          {% else %}
+            <p>Please <a href="{% url 'login' %}">login</a> to leave a comment.</p>
+          {% endif %}
+
+          <!-- Display Comments -->
           <div class="mt-4">
-            <p><strong>Saeed:</strong> Very effective product. Helped me a lot.</p>
-            <p><strong>Qasim:</strong> Quick delivery and good packaging.</p>
+            {% if comments %}
+              {% for comment in comments %}
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">{{ comment.user.first_name }} - {{ comment.created_at|date:"F j, Y" }}</h6>
+                    <p class="card-text">{{ comment.text }}</p>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <p>No comments yet. Be the first to comment!</p>
+            {% endif %}
           </div>
         </div>
       </div>

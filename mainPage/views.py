@@ -1,8 +1,7 @@
-
 from django.shortcuts import render, redirect,get_object_or_404
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from .models import Product, Category
+from .models import Product, Category, Comment
 from userProfile.models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -15,11 +14,12 @@ def home(request):
     return render(request,'home.html')
 @never_cache
 def mainPage(request):
-
+    # Get the 5 most recent comments
+    recent_comments = Comment.objects.all().order_by('-created_at')[:5]
     categories = Category.objects.prefetch_related('products').all()  # Fetch categories with products
     products = Product.objects.all()  # Fetch all products
 
-    return render(request, 'mainPage.html', {'categories': categories, 'products': products})
+    return render(request, 'mainPage.html', {'categories': categories, 'products': products, 'comments': recent_comments})
 
 
 def submit_rating(request, product_id):
