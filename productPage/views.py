@@ -2,6 +2,14 @@ from django.shortcuts import render, get_object_or_404,redirect
 from mainPage.models import Product, Comment
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.http import HttpResponseForbidden
+
+def superuser_required(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return HttpResponseForbidden("You do not have permission to access this page.")
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 def productPage(request, id):
     product = get_object_or_404(Product, id=id)
@@ -16,7 +24,7 @@ def rate_product(request, id):
              
         if 1 <= new_rating <= 5:
             product.update_rating(new_rating)
-            print(new_rating)
+           
             return redirect('productPage',id=id)
     return render(request, 'product-page.html', {'product': product})    
 
@@ -36,7 +44,7 @@ def add_comment(request, product_id):
             messages.error(request, 'Comment cannot be empty!')
     return redirect('productPage', id=product_id)    
 
-@user_passes_test(lambda u: u.is_superuser)
+@superuser_required
 def admin_reply_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     if request.method == 'POST':
