@@ -10,6 +10,7 @@ from django.views.decorators.cache import never_cache
 from django.core.paginator import Paginator
 from django.db.models import Count, Sum, Avg, F
 from django.http import HttpResponseForbidden
+from django.contrib import messages
 
 
 
@@ -82,8 +83,30 @@ def user_profile(request):
 def search(request):
     query = request.GET.get('q', '')
     products = Product.objects.filter(name__icontains=query) if query else []
+    
+    # Get sort parameter from request
+    sort_by = request.GET.get('sort')
+    if sort_by == 'name':
+        products = products.order_by('name')
+    elif sort_by == 'rating':
+        products = products.order_by('-rating')
+    elif sort_by == 'price_low':
+        products = products.order_by('price')
+    elif sort_by == 'price_high':
+        products = products.order_by('-price')
+    elif sort_by == 'available':
+        products = products.order_by('-available', 'name')  # Available first, then by name
 
-    return render(request, 'search.html', {'products': products, 'query': query})
+    # Pagination
+    paginator = Paginator(products, 6)  # Show 6 products per page
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'search.html', {
+        'products': page_obj,
+        'query': query,
+        'sort': sort_by  # Pass the current sort to maintain it in pagination
+    })
 
 def superuser_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
@@ -135,4 +158,24 @@ def reports(request):
     }
     
     return render(request, 'reports.html', context)
+
+@superuser_required
+def product_comments(request):
+    # Get all comments with their associated products
+    comments = Comment.objects.select_related('product', 'user').order_by('-created_at')
+    
+    if request.method == 'POST':
+        comment_id = request.POST.get('comment_id')
+        reply_text = request.POST.get('reply_text')
+        
+        if comment_id and reply_text:
+            comment = get_object_or_404(Comment, id=comment_id)
+            comment.reply = reply_text
+            comment.save()
+            messages.success(request, 'Reply added successfully!')
+            return redirect('product_comments')
+    
+    return render(request, 'product_comments.html', {
+        'comments': comments
+    })
 

@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Comments - DARU</title>
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+    <style>
+        .comment-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .comment-product {
+            font-weight: bold;
+            color: #10e7f4;
+        }
+        .comment-user {
+            color: #6c757d;
+        }
+        .comment-date {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .comment-content {
+            margin: 10px 0;
+        }
+        .reply-section {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        .admin-reply {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .edit-reply-btn {
+            margin-top: 10px;
+        }
+        .nav-link-form {
+            display: inline;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-link-form button {
+            background: none;
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1rem;
+        }
+        .nav-link-form button:hover {
+            color: #10e7f4;
+        }
+    </style>
+</head>
+<body class="sub_page">
+    <div class="hero_area">
+        <!-- Header Section -->
+        <header class="header_section">
+            <div class="container">
+                <nav class="navbar navbar-expand-lg custom_nav-container">
+                    <a class="navbar-brand" href="{% url 'home' %}">
+                        <span>DARU</span>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'home' %}">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'mainPage' %}">Products</a>
+                            </li>
+                            {% if user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'user_profile' %}">Profile</a>
+                                </li>
+                                {% if user.is_superuser %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'reports' %}">Reports</a>
+                                    </li>
+                                {% endif %}
+                                <li class="nav-item">
+                                    <form method="post" action="{% url 'logout' %}" class="nav-link-form">
+                                        {% csrf_token %}
+                                        <button type="submit" class="nav-link">Logout</button>
+                                    </form>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </header>
+    </div>
+
+    <section class="layout_padding">
+        <div class="container">
+            <div class="custom_heading-container">
+                <h2>Product Comments</h2>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% for comment in comments %}
+            <div class="comment-card">
+                <div class="comment-header">
+                    <div>
+                        <span class="comment-product">{{ comment.product.name }}</span>
+                        <span class="comment-user">by {{ comment.user.first_name }} {{ comment.user.last_name }}</span>
+                    </div>
+                    <span class="comment-date">{{ comment.created_at|date:"M d, Y H:i" }}</span>
+                </div>
+                <div class="comment-content">
+                    {{ comment.text }}
+                </div>
+                <div class="reply-section">
+                    <form method="post" action="{% url 'product_comments' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                        <div class="form-group">
+                            <textarea name="reply_text" class="form-control" rows="3" placeholder="Write your reply..." required>{{ comment.reply }}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            {% if comment.reply %}
+                                Update Reply
+                            {% else %}
+                                Reply
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info">
+                No comments found.
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="footer_section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4>About Us</h4>
+                    <p>DARU is your trusted online pharmacy, providing quality healthcare products and services.</p>
+                </div>
+                <div class="col-md-4">
+                    <h4>Quick Links</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'mainPage' %}">Products</a></li>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'user_profile' %}">Profile</a></li>
+                        {% else %}
+                            <li><a href="{% url 'login' %}">Login</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h4>Contact Us</h4>
+                    <p>Email: info@daru.com</p>
+                    <p>Phone: +1 234 567 890</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="copyright">© 2025 DARU. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 

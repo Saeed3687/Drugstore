@@ -13,7 +13,7 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
 
-  <title>Medion</title>
+  <title>DARU</title>
 
   <!-- slider stylesheet -->
   <link rel="stylesheet" type="text/css"
@@ -129,7 +129,7 @@
           <a class="navbar-brand" href="index.html">
             <img src="{%static 'images/logo.png' %}" alt="">
             <span>
-              Medion
+              DARU
             </span>
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -191,6 +191,20 @@
           </h2>
         </div>
       </div>
+      <div class="d-flex justify-content-end mb-4">
+        <form method="get" action="" class="form-inline">
+          <input type="hidden" name="q" value="{{ query }}">
+          <label for="sort" class="mr-2">Sort by:</label>
+          <select name="sort" id="sort" class="form-control" onchange="this.form.submit()">
+            <option value="">-- Select --</option>
+            <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>Alphabet</option>
+            <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Rating</option>
+            <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+            <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+            <option value="available" {% if request.GET.sort == 'available' %}selected{% endif %}>Available First</option>
+          </select>
+        </form>
+      </div>
     </div>
     {% if products %}
       <div class="product-grid">
@@ -214,6 +228,23 @@
           </div>
         {% endfor %}
       </div>
+      {% if products.paginator.num_pages > 1 %}
+      <div class="d-flex justify-content-center mt-4">
+        {% if products.has_previous %}
+          <a href="?q={{ query }}&page={{ products.previous_page_number }}{% if sort %}&sort={{ sort }}{% endif %}" class="btn btn-outline-dark mx-2">Previous Page</a>
+        {% else %}
+          <button class="btn btn-outline-dark mx-2" disabled>Previous Page</button>
+        {% endif %}
+        
+        <span class="mx-3 align-self-center">Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+        
+        {% if products.has_next %}
+          <a href="?q={{ query }}&page={{ products.next_page_number }}{% if sort %}&sort={{ sort }}{% endif %}" class="btn btn-dark mx-2">Next Page</a>
+        {% else %}
+          <button class="btn btn-dark mx-2" disabled>Next Page</button>
+        {% endif %}
+      </div>
+      {% endif %}
     {% else %}
       <p style="margin-top: 50px; margin-left: 400px; font-family: Poppins; font-size: large;">No products found.</p>
     {% endif %}
