@@ -14,18 +14,31 @@ def superuser_required(view_func):
 def productPage(request, id):
     product = get_object_or_404(Product, id=id)
     comments = product.comments.all()
-    return render(request, 'product-page.html', {'product': product, 'comments': comments})
+    user_rating = None
+    if request.user.is_authenticated:
+        try:
+            user_rating = product.user_ratings.get(user=request.user).rating
+        except:
+            pass
+    return render(request, 'product-page.html', {
+        'product': product, 
+        'comments': comments,
+        'user': request.user,
+        'user_rating': user_rating
+    })
 @login_required
 def rate_product(request, id):
     product = get_object_or_404(Product, id=id)
     if request.method == "POST":
         new_rating = int(request.POST.get("rating", 0))
-       
-             
+        
         if 1 <= new_rating <= 5:
-            product.update_rating(new_rating)
-           
-            return redirect('productPage',id=id)
+            user_rating = product.update_rating(request.user, new_rating)
+            messages.success(request, f"Your rating of {new_rating} stars has been saved!")
+            return redirect('productPage', id=id)
+        else:
+            messages.error(request, "Invalid rating value. Please rate between 1 and 5 stars.")
+    
     return render(request, 'product-page.html', {'product': product})    
 
 @login_required

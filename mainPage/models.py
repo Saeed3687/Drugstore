@@ -25,12 +25,48 @@ class Product(models.Model):
     count = models.IntegerField(default=0)  # Add count field
     available = models.BooleanField(default=True)  # Add this field
 
-    def update_rating(self, new_rating):
+    def update_rating(self, user, new_rating):
         """Update the product's rating when a new rating is submitted."""
-        total_rating = self.rating * self.num_ratings + new_rating
-        self.num_ratings += 1
-        self.rating = total_rating / self.num_ratings
+        # Get or create user rating
+        user_rating, created = UserRating.objects.get_or_create(
+            user=user,
+            product=self,
+            defaults={'rating': new_rating}
+        )
+
+        if not created:
+            # If rating exists, update it
+            old_rating = user_rating.rating
+            user_rating.rating = new_rating
+            user_rating.save()
+            
+            # Update product rating
+            total_rating = (self.rating * self.num_ratings) - old_rating + new_rating
+            self.rating = total_rating / self.num_ratings
+        else:
+            # If new rating, add to total
+            total_rating = (self.rating * self.num_ratings) + new_rating
+            self.num_ratings += 1
+            self.rating = total_rating / self.num_ratings
+        
         self.save()
+        return user_rating
+
+    def get_user_rating(self):
+        """Get the current user's rating for this product."""
+        from django.contrib.auth.models import AnonymousUser
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        try:
+            # Get the current user from the request
+            from django.contrib.auth.context_processors import auth
+            request = auth(None).get('request')
+            if request and not isinstance(request.user, AnonymousUser):
+                return UserRating.objects.get(user=request.user, product=self).rating
+        except (UserRating.DoesNotExist, AttributeError):
+            return None
+        return None
 
     def update_availability(self):
         """Update product availability based on count"""
@@ -61,5 +97,19 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.user.first_name} on {self.product.name}'
+
+
+class UserRating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='user_ratings')
+    rating = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['user', 'product']  # Ensure one rating per user per product
+
+    def __str__(self):
+        return f'{self.user.first_name} rated {self.product.name} as {self.rating}'
 
 

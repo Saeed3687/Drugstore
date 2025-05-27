@@ -200,6 +200,22 @@
               </div>
               <h6 class="price"><span>$</span>{{ product.price }}</h6>
               <p>Available: {{ product.count }} items</p>
+              {% if user.is_authenticated %}
+                <p>Your Rating: {% if user_rating %}{{ user_rating }} stars{% else %}Not rated yet{% endif %}</p>
+                <form method="post" action="{% url 'rate_product' product.id %}">
+                  {% csrf_token %}
+                  <div class="rating">
+                    {% for i in "12345"|make_list %}
+                      <label>
+                        <input type="radio" name="rating" value="{{ i }}" style="display:none;" onchange="this.form.submit();">
+                        <span class="star" onmouseover="highlightStars(this)" onmouseout="resetStars(this)" onclick="selectStar(this)" style="font-size: 24px; color: gold;">
+                          {% if user_rating and forloop.counter <= user_rating %}★{% else %}☆{% endif %}
+                        </span>
+                      </label>
+                    {% endfor %}
+                  </div>
+                </form>
+              {% endif %}
               {% if product.available and product.count > 0 %}
                 <form method="post" action="{% url 'add_to_cart' product.id %}">
                   {% csrf_token %}
