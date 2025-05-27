@@ -2,11 +2,14 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .models import Product, Category, Comment
+from Cart.models import Cart, CartItem
 from userProfile.models import UserProfile
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.views.decorators.cache import never_cache
 from django.core.paginator import Paginator
+from django.db.models import Count, Sum, Avg, F
+from django.http import HttpResponseForbidden
 
 
 
@@ -81,4 +84,55 @@ def search(request):
     products = Product.objects.filter(name__icontains=query) if query else []
 
     return render(request, 'search.html', {'products': products, 'query': query})
+
+def superuser_required(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return HttpResponseForbidden("You do not have permission to access this page.")
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+@superuser_required
+def reports(request):
+    # Get total sales by summing the price * quantity of all cart items in paid carts
+    total_sales = CartItem.objects.filter(
+        cart__is_paid=True
+    ).aggregate(
+        total=Sum(F('price') * F('quantity'))
+    )['total'] or 0
+
+    # Get best-selling products
+    best_selling_products = Product.objects.annotate(
+        total_sold=Sum('cartitem__quantity')
+    ).order_by('-total_sold')[:5]
+
+    # Get most popular products by rating
+    most_popular_products = Product.objects.annotate(
+        avg_rating=Avg('user_ratings__rating')
+    ).order_by('-avg_rating')[:5]
+
+    # Get sales by category
+    sales_by_category = Product.objects.values('category__name').annotate(
+        total_sales=Sum('cartitem__quantity')
+    ).order_by('-total_sales')
+
+    # Get recent orders with their totals
+    recent_orders = Cart.objects.filter(is_paid=True).order_by('-created_at')[:10]
+    orders_with_totals = []
+    for order in recent_orders:
+        total = sum(item.get_cost() for item in order.items.all())
+        orders_with_totals.append({
+            'order': order,
+            'total': total
+        })
+
+    context = {
+        'total_sales': total_sales,
+        'best_selling_products': best_selling_products,
+        'most_popular_products': most_popular_products,
+        'sales_by_category': sales_by_category,
+        'recent_orders': orders_with_totals,
+    }
+    
+    return render(request, 'reports.html', context)
 

@@ -183,6 +183,16 @@
             <p>
               From this pannel you can see and edit your personal info and see your order codes.
             </p>
+            <div class="profile-info">
+                <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                <p>Email: {{ user.email }}</p>
+                {% if user.is_superuser %}
+                <div class="admin-section">
+                    <h4>Admin Controls</h4>
+                    <a href="{% url 'reports' %}" class="btn btn-info">View Reports</a>
+                </div>
+                {% endif %}
+            </div>
           </div>
         </div>
       </div>
