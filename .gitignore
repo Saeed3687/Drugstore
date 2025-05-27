@@ -3,3 +3,6 @@
 *migrations
 *__init__.py
 *staticfiles
+node_modules
+package-lock.json
+package.json
