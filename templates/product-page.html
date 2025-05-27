@@ -168,8 +168,7 @@
         <!-- Product Image -->
        
         <div class="col-md-6">
-          <img src="{{ product.image.url }}" alt="{{ product.name }}"
-          style="width: 100%; height: 555px !important; object-fit: fill; height: auto; border-radius: 12px; border: 1px solid #ccc;">
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 555px !important; object-fit: fill; height: auto; border-radius: 12px; border: 1px solid #ccc;">
         </div>
   
         <!-- Product Description -->
@@ -192,10 +191,24 @@
                 {% endfor %}
               </div>
             </form>
-            <form method="post" action="{% url 'add_to_cart' product.id %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-info mt-3">Add to Cart</button>
-            </form>
+            <div class="detail-box">
+              <h2>{{ product.name }}</h2>
+              <div class="star_container">
+                {% for i in "12345"|make_list %}
+                  <span class="star">{% if forloop.counter <= product.rating %}★{% else %}☆{% endif %}</span>
+                {% endfor %}
+              </div>
+              <h6 class="price"><span>$</span>{{ product.price }}</h6>
+              <p>Available: {{ product.count }} items</p>
+              {% if product.available and product.count > 0 %}
+                <form method="post" action="{% url 'add_to_cart' product.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-info mt-3">Add to Cart</button>
+                </form>
+              {% else %}
+                <button class="btn btn-secondary mt-3" disabled>Out of Stock</button>
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>

@@ -22,8 +22,8 @@ class Product(models.Model):
     rating = models.FloatField(default=0.0)  # Store average rating
     num_ratings = models.IntegerField(default=0)  # Track number of ratings
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products", null=True, blank=True)
+    count = models.IntegerField(default=0)  # Add count field
     available = models.BooleanField(default=True)  # Add this field
-
 
     def update_rating(self, new_rating):
         """Update the product's rating when a new rating is submitted."""
@@ -31,6 +31,19 @@ class Product(models.Model):
         self.num_ratings += 1
         self.rating = total_rating / self.num_ratings
         self.save()
+
+    def update_availability(self):
+        """Update product availability based on count"""
+        self.available = self.count > 0
+        self.save()
+
+    def decrease_count(self, amount=1):
+        """Decrease product count and update availability"""
+        if self.count >= amount:
+            self.count -= amount
+            self.update_availability()
+            return True
+        return False
 
     def __str__(self):
         return self.name

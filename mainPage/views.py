@@ -6,6 +6,7 @@ from userProfile.models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.views.decorators.cache import never_cache
+from django.core.paginator import Paginator
 
 
 
@@ -36,8 +37,30 @@ def submit_rating(request, product_id):
 def category_products(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     products = Product.objects.filter(category=category)
+    
+    # Get sort parameter from request
+    sort_by = request.GET.get('sort')
+    if sort_by == 'name':
+        products = products.order_by('name')
+    elif sort_by == 'rating':
+        products = products.order_by('-rating')
+    elif sort_by == 'price_low':
+        products = products.order_by('price')
+    elif sort_by == 'price_high':
+        products = products.order_by('-price')
+    elif sort_by == 'available':
+        products = products.order_by('-available', 'name')  # Available first, then by name
 
-    return render(request, 'category.html', {'category': category, 'products': products})
+    # Pagination
+    paginator = Paginator(products, 6)  # Show 6 products per page
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'category.html', {
+        'category': category, 
+        'products': page_obj,
+        'sort': sort_by  # Pass the current sort to maintain it in pagination
+    })
 
 
 @login_required
