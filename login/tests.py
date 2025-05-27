@@ -4,17 +4,20 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 
 
-real_user = User.objects.get(username = 'ahmad@gmail.com')
-
 class LoginViewTest(TestCase):
     
     def setUp(self):
-        self.user = User.objects.create_user(username='ahmad@gmail.com', email='ahmad@gmail.com', password='123456')
+        self.user = User.objects.create_user(
+            username='ahmad@gmail.com',
+            email='ahmad@gmail.com',
+            password='123456',
+            first_name='fa3'  # Set the first name here
+        )
 
     def test_is_in_database(self):
-        
-        self.assertEqual(real_user.first_name,'fa3')
-        self.assertTrue(check_password('123456', real_user.password))
+        user = User.objects.get(username='ahmad@gmail.com')
+        self.assertEqual(user.first_name, 'fa3')
+        self.assertTrue(check_password('123456', user.password))
 
     def test_login_successful(self):
         response = self.client.post(reverse('login'), {

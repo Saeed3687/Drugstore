@@ -25,4 +25,7 @@
 
 ## Test
 
-- python manage.py test login
+- ### Test each part
+   - python manage.py test login
+- ### Overall test          
+   - python manage.py test

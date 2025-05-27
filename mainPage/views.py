@@ -54,6 +54,9 @@ def category_products(request, category_id):
         products = products.order_by('-price')
     elif sort_by == 'available':
         products = products.order_by('-available', 'name')  # Available first, then by name
+    else:
+        # Default ordering if no sort parameter is provided
+        products = products.order_by('id')
 
     # Pagination
     paginator = Paginator(products, 6)  # Show 6 products per page
@@ -82,7 +85,7 @@ def user_profile(request):
 
 def search(request):
     query = request.GET.get('q', '')
-    products = Product.objects.filter(name__icontains=query) if query else []
+    products = Product.objects.filter(name__icontains=query) if query else Product.objects.none()
     
     # Get sort parameter from request
     sort_by = request.GET.get('sort')
@@ -96,6 +99,9 @@ def search(request):
         products = products.order_by('-price')
     elif sort_by == 'available':
         products = products.order_by('-available', 'name')  # Available first, then by name
+    else:
+        # Default ordering if no sort parameter is provided
+        products = products.order_by('id')
 
     # Pagination
     paginator = Paginator(products, 6)  # Show 6 products per page

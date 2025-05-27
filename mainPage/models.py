@@ -40,7 +40,7 @@ class Product(models.Model):
             user_rating.rating = new_rating
             user_rating.save()
             
-            # Update product rating
+            # Update product rating by subtracting old rating and adding new rating
             total_rating = (self.rating * self.num_ratings) - old_rating + new_rating
             self.rating = total_rating / self.num_ratings
         else:
